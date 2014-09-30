@@ -1,3 +1,6 @@
+# Reed Anderson
+
+from __future__ import division
 from math import log, exp
 from collections import defaultdict
 from string import lower
@@ -8,7 +11,7 @@ from numpy import mean
 import nltk
 from nltk import FreqDist
 from nltk.util import bigrams
-from nltk.tokenize import TreebankWordTokenizer
+from nltk.tokenize import TreebankWordTokenizer, RegexpTokenizer
 
 kLM_ORDER = 2
 kUNK_CUTOFF = 3
@@ -26,7 +29,7 @@ class BigramLanguageModel:
                  katz_cutoff=5, kn_discount=0.1, kn_concentration=1.0,
                  tokenize_function=TreebankWordTokenizer().tokenize,
                  normalize_function=lower):
-        self._unk_cutoff = 1
+        self._unk_cutoff = unk_cutoff
         self._jm_lambda = jm_lambda
         self._dirichlet_alpha = dirichlet_alpha
         self._katz_cutoff = katz_cutoff
@@ -38,7 +41,13 @@ class BigramLanguageModel:
         self._normalizer = normalize_function
         
         # Add your code here!
-        self._vocab_freq = FreqDist() 
+        self._vocab_freq = FreqDist()
+        self._gram_freq = FreqDist()
+        self._context_freq = FreqDist()
+
+        self._vocab_freq[kSTART] += kUNK_CUTOFF + 1
+        self._vocab_freq[kEND] += kUNK_CUTOFF + 1
+
 
     def train_seen(self, word, count=1):
         """
@@ -48,8 +57,7 @@ class BigramLanguageModel:
         assert not self._vocab_final, \
             "Trying to add new words to finalized vocab"
 
-        # f = FreqDist()
-        self._vocab_freq.inc(word, count) 
+        self._vocab_freq.inc(word, count)
 
         return self._vocab_freq[word] 
 
@@ -57,7 +65,7 @@ class BigramLanguageModel:
         """
         Returns a generator over tokens in the sentence.  
 
-        You don't need to modify this code.
+        No modify
         """
         for ii in self._tokenizer(sent):
             yield ii
@@ -68,20 +76,23 @@ class BigramLanguageModel:
         cutoff threshold shold have the same value.  All words with counts
         greater than or equal to the cutoff should be unique and consistent.
         """
+
         assert self._vocab_final, \
             "Vocab must be finalized before looking up words"
 
         freqCount = self._vocab_freq[word]
 
-        if freqCount >= self._unk_cutoff:
-            return freqCount
+        if freqCount > self._unk_cutoff:
+            return word
         else:
-            return 1
+            return "<UNK>"
 
     def finalize(self):
         """
         Fixes the vocabulary as static, prevents keeping additional vocab from
         being added
+
+        No modify
         """
         self._vocab_final = True
 
@@ -90,6 +101,8 @@ class BigramLanguageModel:
         Given a sentence, yields a sentence suitable for training or
         testing.  Prefix the sentence with <s>, replace words not in
         the vocabulary with <UNK>, and end the sentence with </s>.
+
+        No modify
         """
         yield self.vocab_lookup(kSTART)
         for ii in self._tokenizer(sentence):
@@ -100,6 +113,8 @@ class BigramLanguageModel:
     def normalize(self, word):
         """
         Normalize a word
+
+        No modify
         """
         return self._normalizer(word)
 
@@ -109,15 +124,35 @@ class BigramLanguageModel:
         Return the log MLE estimate of a word given a context.  If the
         MLE would be negative infinity, use kNEG_INF
         """
+        prob = 0.0
+        bgram = (context, word)
 
-        return 0.0
+        numer = self._gram_freq[bgram]
+        denom = self._context_freq[context]
+
+        if denom == 0:
+            return kNEG_INF
+
+        if self._gram_freq[bgram] != 0:
+            prob = numer / denom
+
+        if prob == 0.0:
+            return kNEG_INF
+        else:
+            return lg(prob)
 
     def laplace(self, context, word):
         """
         Return the log MLE estimate of a word given a context.
         """
+        bgram = (context, word)
 
-        return 0.0
+        numer = self._gram_freq[bgram] + 1
+        denom = len(self._vocab_freq.keys()) + self._context_freq[context]
+
+        prob = numer / denom
+
+        return lg(prob)
 
     def good_turing(self, context, word):
         """
@@ -131,21 +166,94 @@ class BigramLanguageModel:
         given a context; interpolates context probability with the
         overall corpus probability.
         """
-        return 0.0
+
+        bigram = (context, word)
+        bigram_prob = 0
+
+        unigram_prob = (1 - self._jm_lambda) * (1 / len(self._vocab_freq))
+    
+        for i in self._gram_freq:
+            if i == bigram:
+                bigram_count = 1
+                bigram_prob = (self._jm_lambda+unigram_prob) * bigram_count
+
+        result = unigram_prob + bigram_prob
+        return lg(result)
 
     def kneser_ney(self, context, word):
         """
         Return the log probability of a word given a context given
         Kneser Ney backoff
         """
-        return 0.0
+        
+        bgram = (context, word)
+        unigram_freq = FreqDist()
+
+        theta = self._kn_concentration
+        vocabulary = 1 / len(self._vocab_freq.keys())
+        discount_delta = self._kn_discount
+        unigram_T = len(self._context_freq.keys())
+        bigram_T = self._context_freq[context]
+
+        for i in self._gram_freq:
+            unigram_freq.inc(i[1])
+
+        # Unigram Restaurant
+        # C_0,x
+        count_unirest_wordTable = unigram_freq[word]
+        # C_0,.
+        count_unirest_allTable = unigram_freq.N()
+
+        # u_Bigram Restaurant
+        # C_u,x
+        count_birest_wordTable = self._gram_freq[bgram]
+
+        # C_u,.
+        count_birest_allTable = self._context_freq[context]
+
+        existingTable_numer = count_birest_wordTable - discount_delta
+        existingTable_denom = theta + count_birest_allTable 
+        existingTable = existingTable_numer / existingTable_denom
+
+        if existingTable < 0:
+            existingTable = 0
+
+        newTable_numer = theta + (bigram_T*discount_delta)
+        newTable_denom = theta + count_birest_allTable 
+        newTable = newTable_numer / newTable_denom
+
+        back_a_numer = count_unirest_wordTable - discount_delta
+        back_a_denom = count_unirest_allTable + theta
+        back_a = back_a_numer / back_a_denom
+        if back_a < 0:
+            back_a = 0
+
+        back_b_numer = theta + (unigram_T * discount_delta)
+        back_b_denom = count_unirest_allTable + theta
+        back_b = back_b_numer / back_b_denom
+        back_b = back_b * vocabulary
+
+        result = existingTable + (newTable*(back_a+back_b))
+        return lg(result)
+
+
 
     def dirichlet(self, context, word):
         """
         Additive smoothing, assuming independent Dirichlets with fixed
         hyperparameter.
         """
-        return 0.0
+
+        prob = 0.0
+        bgram = (context, word)
+
+        numer = self._gram_freq[bgram] + self._dirichlet_alpha
+        denom = self._context_freq[context] + (self._dirichlet_alpha * len(self._vocab_freq.keys()))
+
+        prob = numer / denom
+
+        return lg(prob)
+
 
     def add_train(self, sentence):
         """
@@ -154,12 +262,25 @@ class BigramLanguageModel:
 
         # You'll need to complete this function, but here's a line of code that
         # will hopefully get you started.
+
+        # Add new vocab counts
+        nopunc_tokenize = RegexpTokenizer(r'\w+')
+        nopunc_list = nopunc_tokenize.tokenize(sentence)
+        for i in nopunc_list:
+            self._vocab_freq[i] += 1
+
+        # Count occurances of bigrams
         for context, word in bigrams(self.tokenize_and_censor(sentence)):
-            print context, word
+            x = (context, word)
+            self._gram_freq.inc(x)
+            self._context_freq.inc(context)
+
 
     def perplexity(self, sentence, method):
         """
         Compute the perplexity of a sentence given a estimation method
+
+        No modify
         """
         return 2.0 ** (-1.0 * mean([method(context, word) for context, word in \
                                     bigrams(self.tokenize_and_censor(sentence))]))
@@ -222,8 +343,7 @@ if __name__ == "__main__":
             break
 
     print("Trained language model with %i sentences from Brown corpus." % sentence_count)
-    assert args.method in ['kneser_ney', 'mle', 'dirichlet', \
-                           'jelinek_mercer', 'good_turing', 'laplace'], \
+    assert args.method in ['kneser_ney', 'mle', 'dirichlet', 'jelinek_mercer', 'good_turing', 'laplace'], \
       "Invalid estimation method"
 
     sent = raw_input()

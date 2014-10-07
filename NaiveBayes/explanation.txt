@@ -1,0 +1,9 @@
+Kaggle Username: Reed Anderson
+
+	The key lesson from this homework is that choosing features from data to include in the mathematical categorization function has a dramatic impact on accuracy. In other words, the math is great, but it still matters what data you choose to be the variables.
+
+	The first big step in cleaning up the input data is to remove all punctuation, and make remaining tokenized words lowercase. I used a regex RegexpTokenizer(r'\w+') from the nltk.tokenize library to accomplish this first step. This is effective because punctuation did not make a Quiz Bowl questions more or less categorical to any category, but instead added noise. Here, the score moved to 0.694524
+
+	Next, modifying morphy_stem() to return the string "0" when the stem for a word is not available in the morphy method has the same effect: if a word is unknown to this dictionary then is it likely rare, and just adding noise to the data. Score 0.712296
+
+

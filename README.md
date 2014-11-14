@@ -1,1 +1,0 @@
-Recent work from my fall 2014 graduate course in NLP, which is heavily influenced by machine learning. Early code in this repo resembles C++ code written in Python. The goal is for later code to be more pythonic and professional. 

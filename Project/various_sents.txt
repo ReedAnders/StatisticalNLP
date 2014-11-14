@@ -1,0 +1,7 @@
+'The President did not comment',
+                       'I lost the keys',
+                       'The team won the game',
+                       'Sara has two kids',
+                       'The ball went off the court',
+                       'They had the ball for the whole game',
+                       'The show is over'

@@ -1,0 +1,29 @@
+TRAIN:
+
+{'category': 'lit', 
+
+'Question ID': '162809', 
+
+'Question Text': 'he acted with the group theater for which he wrote plays such as rocket to the moon and the tale of the jewish berger family in the bronx during the great depression awake and sing but he is best known for plays about a violinist-turned-boxer and a taxi drivers strike. who penned golden boy and waiting_for_lefty.', 
+
+'QANTA Scores': 'clifford_odets:0.889476043111, anne_bradstreet:0.0177569677956, miguel_de_unamuno:0.011401880214, milan_kundera:0.00821374695114, naguib_mahfouz:0.00753530610546, miguel_de_cervantes:0.00464331301351, jane_eyre_(character):0.00460527002794, doris_lessing:0.00440038393381, gao_xingjian:0.00291107119796, henry_david_thoreau:0.00284848824394, isaac_bashevis_singer:0.00192201589636, gotthold_ephraim_lessing:0.00163478712384, the_little_foxes:0.00159678052677, the_awakening_(chopin_novel):0.00123093728602, simone_de_beauvoir:0.00120194863277, louisa_may_alcott:0.00117843566081, derek_walcott:0.00114171778645, the_seagull:0.00100615167911, jean_genet:0.000994579141813, silent_cry:0.000839587285742', 
+
+'Answer': 'clifford_odets', 
+
+'Sentence Position': '1', 
+
+'IR_Wiki Scores': "clifford_odets:13.1169165681, eugene_o'neill:2.22638565009, yukio_mishima:2.16572868452, w._somerset_maugham:2.12539349697, w._b._yeats:2.10930559616, thomas_pynchon:2.08969739557, rabindranath_tagore:2.0588529254, lewis_carroll:1.7554567026, john_steinbeck:1.71567819965, virginia_woolf:1.6737076527, lorraine_hansberry:1.65636837966, ray_bradbury:1.65416464189, the_merchant_of_venice:1.64835225223, wole_soyinka:1.63219986894, harold_pinter:1.63097664276, samuel_beckett:1.62042596425, jorge_luis_borges:1.6078061131, eudora_welty:1.53779562814, gertrude_stein:1.53358709901, henry_wadsworth_longfellow:1.51392605763"}
+
+TEST:
+
+{'category': 'lit', 
+
+'Question ID': '188083', 
+
+'Question Text': 'the protagonist of this work bangs on an apartment wall when neighbors listen to an otto skadelig symphony. the protagonist is arrested in a house full of cats in this novel whose main characters frequent the korova milkbar. george and pete are associates of its protagonist who undergoes the ludovico technique to repress violent tendencies.', 
+
+'QANTA Scores': 'a_clockwork_orange:0.192803456499, invisible_man:0.02238244155, the_charterhouse_of_parma:0.0203388755342, emma:0.0194526741169, the_trial:0.01897717166, northanger_abbey:0.0171779599454, a_room_with_a_view:0.0152332773151, jonathan_swift:0.0145534479946, the_jungle:0.0117905340405, far_from_the_madding_crowd:0.0111395760431, bartleby,_the_scrivener:0.0100370698129, the_overcoat:0.00957561832659, steppenwolf_(novel):0.00951413144178, shirley_jackson:0.00938350594901, jane_eyre:0.00902088706125, the_duchess_of_malfi:0.0082941057462, mansfield_park:0.00829037434364, thomas_gray:0.00803132620874, the_metamorphosis:0.00768392224965, benito_cereno:0.00759036289571', 
+
+'Sentence Position': '2', 
+
+'IR_Wiki Scores': 'a_clockwork_orange:11.0224989432, anthony_burgess:6.56278079928, stephen_crane:2.48463532304, the_metamorphosis:2.31924062079, the_sound_and_the_fury:2.055241243, the_plague:1.8963125254, the_color_purple:1.78848113191, margaret_atwood:1.66335948461, daniel_defoe:1.64472940139, death_of_a_salesman:1.63131092124, the_catcher_in_the_rye:1.62679711451, native_son:1.59868245696, franz_kafka:1.5476847885, kurt_vonnegut:1.5204902237, george_bernard_shaw:1.51590122052, nineteen_eighty-four:1.49543218579, kubla_khan:1.48742186909, walter_scott:1.48447155236, boris_pasternak:1.4830398566, virginia_woolf:1.47337305254'}

@@ -1,0 +1,334 @@
+\def\DevnagVersion{2.13}% Assignment 2 for CMSC723
+% Finite State Machines
+
+\documentclass[11pt]{article}
+\usepackage{latexsym}
+\usepackage{listings}
+\usepackage{hyperref}
+\usepackage[usenames,dvipsnames]{color}
+\usepackage[pdftex]{graphicx}
+\usepackage{mathtools}
+\lstset{
+basicstyle=\small\ttfamily,
+columns=flexible,
+breaklines=true
+}
+
+
+%@modernhindi
+
+\hypersetup{colorlinks=true,linkcolor=blue}
+
+% \date{}
+\begin{document}
+\begin{center}
+{\Large{\textbf{ Natural Language Processing:  }}}\\
+\mbox{}\\
+{\Large{Assignment 5: Qu' bopbe' paqvam}}\\
+% \mbox{}\\
+%(\textsc{Not For Credit})\\
+\mbox{}\\
+{\large{Jordan Boyd-Graber}}\\
+\mbox{}\\
+{\large{\textbf{Submitted by Reed Anderson}}}\\
+\end{center}
+
+
+% \maketitle
+\lstset{stringstyle=\ttfamily,language=Python,showstringspaces=False,tabsize=8,frameround=tttt,
+		,keywordstyle=\color{Orange}\bfseries, stringstyle=\ttfamily\color{Green}
+		,columns=fullflexible,identifierstyle=\ttfamily
+		% , commentstyle=\itshape\color{Red}
+}
+
+
+
+\section{Tagging and Tag Sets (10 points)}
+
+\subsection{When taggers go bad (5 points)}
+
+Consider the following sentences:
+British Left Waffles on Falkland Islands
+\begin{enumerate}
+\item British Left Waffles on Falkland Islands
+\end{enumerate}
+
+\begin{itemize}
+\item British/\textsc{noun} Left/\textsc{noun} Waffles/\textsc{verb} on/\textsc{preposition} Falkland/\textsc{noun} Islands/\textsc{noun}
+\item British/\textsc{noun} Left/\textsc{verb} Waffles/\textsc{noun} on/\textsc{preposition} Falkland/\textsc{noun} Islands/\textsc{noun}
+\end{itemize}
+
+\subsection{Exploring the tag set (5 points)}
+There are 265 distinct words in the Brown Corpus having exactly four possible tags (assuming nothing is done to normalize the word forms).
+\begin{enumerate}
+\item Create a table with the integers 1\dots 10 in one column, and the number of distinct
+words in the corpus having $\{1, \dots, 10\}$ distinct tags.
+
+\begin{center}
+\begin{tabular}{|c|c|}
+\hline
+Tag Count & Words with Tag Count \\
+\hline
+1 &  40235 \\
+\hline
+2 &  7229 \\
+\hline
+3 &  1594 \\
+\hline
+4 &  463 \\
+\hline
+5 &  176 \\
+\hline
+6 &  75 \\
+\hline
+7 &  23 \\
+\hline
+8 &  10 \\
+\hline
+9 &  5 \\
+\hline
+10 & 2 \\
+\hline
+\end{tabular}
+\end{center}
+
+\item For the word with the greatest number of distinct tags, print out sentences from
+the corpus containing the word, one for each possible tag.
+
+\begin{lstlisting}
+TAG:  ('to', 'TO')
+[('The', 'AT'), ('September-October', 'NP'), ('term', 'NN'), ('jury', 'NN'), ('had', 'HVD'), ('been', 'BEN'),q  ('charged', 'VBN'), ('by', 'IN'), ('Fulton', 'NP-TL'), ('Superior', 'JJ-TL'), ('Court', 'NN-TL'), ('Judge', 'NN-TL'), ('Durwood', 'NP'), ('Pye', 'NP'), ('to', 'TO'), ('investigate', 'VB'), ('reports', 'NNS'), ('of', 'IN'), ('possible', 'JJ'), ('``', '``'), ('irregularities', 'NNS'), ("''", "''"), ('in', 'IN'), ('the', 'AT'), ('hard-fought', 'JJ'), ('primary', 'NN'), ('which', 'WDT'), ('was', 'BEDZ'), ('won', 'VBN'), ('by', 'IN'), ('Mayor-nominate', 'NN-TL'), ('Ivan', 'NP'), ('Allen', 'NP'), ('Jr.', 'NP'), ('.', '.')]
+
+TAG:  ('to', 'IN')
+[('It', 'PPS'), ('recommended', 'VBD'), ('that', 'CS'), ('Fulton', 'NP'), ('legislators', 'NNS'), ('act', 'VB'), ('``', '``'), ('to', 'TO'), ('have', 'HV'), ('these', 'DTS'), ('laws', 'NNS'), ('studied', 'VBN'), ('and', 'CC'), ('revised', 'VBN'), ('to', 'IN'), ('the', 'AT'), ('end', 'NN'), ('of', 'IN'), ('modernizing', 'VBG'), ('and', 'CC'), ('improving', 'VBG'), ('them', 'PPO'), ("''", "''"), ('.', '.')]
+
+TAG:  ('to', 'IN-HL')
+[('Cost', 'NN-HL'), ('up', 'RP-HL'), ('to', 'IN-HL'), ('$37', 'NNS-HL'), ('a', 'AT-HL'), ('year', 'NN-HL')]
+
+TAG:  ('to', 'TO-HL')
+[('Three', 'CD-HL'), ('groups', 'NNS-HL'), ('to', 'TO-HL'), ('meet', 'VB-HL')]
+
+TAG:  ('to', 'IN-TL')
+[('On', 'IN'), ('the', 'AT'), ('clock', 'NN'), ('given', 'VBN'), ('him', 'PPO'), ('was', 'BEDZ'), ('the', 'AT'), ('inscription', 'NN'), (',', ','), ('``', '``'), ('For', 'IN-TL'), ('Outstanding', 'JJ-TL'), ('Contribution', 'NN-TL'), ('to', 'IN-TL'), ('Billiken', 'NP-TL'), ('Basketball', 'NN-TL'), (',', ','), ('1960-61', 'CD'), ("''", "''"), ('.', '.')]
+
+TAG:  ('to', 'TO-NC')
+[('Or', 'CC'), ('an', 'AT'), ('``', '``'), ('I', 'PPSS-NC'), ('want', 'VB-NC'), ('to', 'TO-NC'), ('go', 'VB-NC'), ('home', 'NR-NC'), ("''", "''"), (',', ','), ('or', 'CC'), ('whatever', 'WDT'), ('--', '--'), ('but', 'CC'), ('a', 'AT'), ('nonverbal', 'JJ'), ('one', 'CD'), ('which', 'WDT'), ('reveals', 'VBZ'), ('itself', 'PPL'), (',', ','), ('gradually', 'RB'), (',', ','), ('as', 'CS'), ('the', 'AT'), ('condensed', 'VBN'), ('expression', 'NN'), ('of', 'IN'), ('more', 'AP'), ('than', 'IN'), ('one', 'CD'), ('latent', 'JJ'), ('meaning', 'NN'), ('.', '.')]
+
+TAG:  ('to', 'IN-NC')
+[('When', 'WRB'), ('go', 'VB-NC'), ('represents', 'VBZ'), ('itself', 'PPL'), ('and', 'CC'), ('a', 'AT'), ('complement', 'NN'), ('(', '('), ('being', 'BEG'), ('equivalent', 'JJ'), (',', ','), ('say', 'UH'), (',', ','), ('to', 'IN'), ('go', 'VB-NC'), ('to', 'IN-NC'), ('Martinique', 'NP-NC'), (')', ')'), ('in', 'IN'), ('which', 'WDT-NC'), ('boat', 'NN-NC'), ('did', 'DOD-NC'), ('Jack', 'NP-NC'), ('go', 'VB-NC'), ('on', 'IN-NC'), ('?', '.-NC'), ('?', '.-NC')]
+
+TAG:  ('to', 'NIL')
+[('As', 'CS'), ('the', 'AT'), ('field', 'NN'), ('on', 'IN'), ('which', 'WDT'), ('my', 'PP$'), ('tent', 'NN'), ('was', 'BEDZ'), ('pitched', 'VBN'), ('was', 'BEDZ'), ('a', 'AT'), ('favorite', 'JJ'), ('natural', 'JJ'), ('playground', 'NN'), ('for', 'IN'), ('the', 'AT'), ('kids', 'NNS'), ('of', 'IN'), ('the', 'AT'), ('neighborhood', 'NIL'), (',', ','), ('I', 'NIL'), ('had', 'NIL'), ('made', 'NIL'), ('many', 'NIL'), ('friends', 'NIL'), ('among', 'NIL'), ('them', 'NIL'), (',', ','), ('taking', 'NIL'), ('part', 'NIL'), ('in', 'NIL'), ('their', 'NIL'), ('after-school', 'NIL'), ('games', 'NIL'), ('and', 'NIL'), ('trying', 'NIL'), ('desperately', 'NIL'), ('to', 'NIL'), ('translate', 'NIL'), ("Grimm's", 'NIL'), ('Fairy', 'NIL'), ('Tales', 'NIL'), ('into', 'NIL'), ('an', 'NIL'), ('understandable', 'JJ'), ('French', 'NP'), ('as', 'CS'), ('we', 'PPSS'), ('gathered', 'VBD'), ('around', 'IN'), ('the', 'AT'), ('fire', 'NN'), ('in', 'IN'), ('front', 'NN'), ('of', 'IN'), ('the', 'AT'), ('tent', 'NN'), ('.', '.')]
+
+TAG:  ('to', 'NPS')
+[('Also', 'RB'), ('noted', 'VBN'), ('are', 'BER'), ('the', 'AT'), ('marriages', 'NNS'), ('of', 'IN'), ('Elizabeth', 'NP'), ('Browning', 'NP'), (',', ','), ('daughter', 'NN'), ('of', 'IN'), ('the', 'AT'), ('George', 'NP'), ('L.', 'NP'), ('Brownings', 'NPS'), (',', ','), ('to', 'NPS'), ('Austin', 'NP'), ('C.', 'NP'), ('Smith', 'NP'), ('Jr.', 'NP'), (';', '.'), (';', '.')]
+
+TAG:  ('to', 'QL')
+[('He', 'PPS'), ('suggested', 'VBD'), ('offering', 'VBG'), ('half', 'NN'), ('to', 'IN'), ('Sir', 'NP'), \\('Edward', 'NP'), (',', ','), ('fearing', 'VBG'), ('lest', 'CS'), ('``', '``'), ('he', 'PPS'), ('shall', 'MD'), ('thinke', 'VB'), ('it', 'PPO'), ('to', 'QL'), ('good', 'JJ'), ('for', 'IN'), ('us', 'PPO'), ('and', 'CC'), ('procure', 'VB'), ('it', 'PPO'), ('for', 'IN'), ('himselfe', 'PPL'), (',', ','), ('as', 'CS'), ('he', 'PPS'), ('served', 'VBD'), ('us', 'PPO'), ('the', 'AT'), ('last', 'AP'), ('time', 'NN'), ("''", "''"), ('.', '.')]
+
+
+\end{lstlisting}
+
+\end{enumerate}
+
+\section{Viterbi Algorithm (30 Points)}
+
+\subsection{Emission Probability (10 points)}
+
+The below table represents \(\beta\) as the emission probabilities, where  \(\beta_{noun},_{tera'ngan} \) is approximately equal to 0.44, or (4.1/9.3).
+
+\begin{center}
+\begin{tabular}{|l|c|c|c|c|c|}
+\hline
+   & NOUN & VERB & CONJ & PRO \\
+\hline
+'e & 0.1  &  0.1 &  0.1    &  1.1   \\
+\hline
+'eg &   0.1  & 0.1  &  1.1    &  0.1 \\
+\hline
+ghaH &  0.1   & 0.1   &  0.1    &  1.1  \\
+\hline
+ja'chuqmeH &   0.1  & 1.1    &  0.1    &  0.1   \\
+\hline
+legh &  0.1   &  0.1   &  0.1    &  0.1 \\
+\hline
+neH &  0.1   &  1.1   &  0.1    &  0.1   \\
+\hline
+pa'Daq &  1.1   & 0.1    &  0.1    &  0.1 \\
+\hline
+puq &   2.1  &  0.1   &  0.1    &  0.1 \\
+\hline
+qIp &   0.1  &   2.1  &  0.1    &  0.1 \\
+\hline
+rojHom &   1.1  &  0.1   &  0.1    &  0.1\\
+\hline
+taH &   0.1  &  1.1   &  0.1    &  0.1 \\
+\hline
+tera'ngan & 4.1    &  0.1   &  0.1    &  0.1 \\
+\hline
+yaS &  0.1   &  0.1   &  0.1    &  0.1   \\
+\hline
+SUM & \textbf{9.3} & \textbf{6.3} & \textbf{2.3} & \textbf{3.3} \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{Start and Transition Probability (5 points)}
+
+The below table represents \(\theta\) as the transition probabilities, where  \(\theta_n,_v \) is approximately equal to 0.48, or (3.1/6.4).
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|c|}
+\hline
+      & NOUN & VERB & CONJ & PRO & \textbf{SUM}\\
+\hline
+START &  &   &  &   & \\
+\hline
+N     &  0.1 & 3.1  & 1.1  & 2.1 & \textbf{6.4} \\
+\hline
+V     &  5.1 &  0.1 & 0.1  & 0.1 & \textbf{5.4}\\
+\hline
+CONJ  & 1.1  & 0.1  &  0.1 & 0.1 & \textbf{3.4}\\
+\hline
+PRO   & 0.1 & 1.1  &  0.1 & 0.1 & \textbf{1.3}\\
+\hline
+\end{tabular}
+\end{center}
+
+The below table represents \(\pi\) as the initial probabilities, where  \(\pi_n \) is approximately equal to 0.62, or (2.1/3.4).
+
+\begin{center}
+\begin{tabular}{|c|c|}
+\hline
+N     &  2.1 \\
+\hline
+V     &  1.1 \\
+\hline
+CONJ  & 0.1 \\
+\hline
+PRO   & 0.1 \\
+\hline
+\textbf{SUM}   & \textbf{3.4} \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{Viterbi Decoding (15 points)}
+
+Now consider the following sentence: ``tera'ngan legh yaS''.
+
+\begin{enumerate}
+
+\item Compute the probability of the sequence \textsc{noun}, \textsc{verb}, \textsc{noun}.  
+
+For ``tera'ngan/\textsc{noun} legh/\textsc{verb} yaS/\textsc{noun}'':
+\begin{align*}
+ \pi_n \beta_n,_{tera'ngan}\theta_n,_v \beta_v,_{legh} \theta_v,_n \beta_n,_{yaS} &= \\
+ (2.1/3.4)(4.1/9.3)*(3.1/6.4)(0.1/6.3)*(5.1/5.4)(0.1/9.3) &= 2.1e-5\\
+\end{align*}
+
+\item Create the decoding matrix of this sentence $\ln \delta_{n}(z)$ (word positions are columns, rows are parts of speech).  Only provide log probabilities, and only use base 2.
+
+\begin{center}
+\begin{tabular}{l|ccc}
+	POS & $n=1$ & $n=2$ & $n=3$ \\
+	\hline
+	$z=$\textsc{n} & -1.9 & -14.2& -15.5 \\
+	$z=$\textsc{v} & -7.6 & -8.9 & -14.7 \\
+	$z=$\textsc{conj} & -9.6 & -9.0 & -16.7 \\	
+	$z=$\textsc{pro} & -10.1 & -8.5 & -15.9\\	
+	\hline
+\end{tabular}
+\end{center}
+
+Evaluation of n = 1 :
+\begin{flalign*}
+\delta_1(k) &= \pi_k \beta_k,_{x_i} & \\
+\delta_1(n) &= \pi_n \beta_n,_{tera'ngan} &\\
+&= lg( (2.1/3.4)(4.1/9.3) )\\
+&= -1.9\\
+\\
+\delta_1(v) &= \pi_v \beta_v,_{tera'ngan} &\\
+&= -7.6\\
+\\
+\delta_1(c) &= \pi_c \beta_c,_{tera'ngan} &\\
+&= -9.6\\
+\\
+\delta_1(p) &= \pi_p \beta_p,_{tera'ngan} &\\
+&= -10.1\\
+\end{flalign*}
+
+Evaluation of n = 2 :
+\begin{flalign*}
+\delta_n(k) &= \max\limits_{j}(\delta_{n-1}(j)\theta_{j,k}) \beta_k,_{x_n} &\\
+\delta_2(n) &= (-7.6 + lg(\theta_{v,n})) + \beta_n,_{legh} &\\
+&= -7.7 + lg(0.1/9.3)\\
+&= -14.2\\
+\\
+\delta_2(v) &= (-1.9 + lg(\theta_{n,v})) + \beta_v,_{legh} &\\
+&= -2.9 + lg(0.1/6.3)\\
+&= -8.9\\
+\\
+\delta_2(c) &= (-1.9 + lg(\theta_{n,c})) + \beta_c,_{legh} &\\
+&= -4.4 + lg(0.1/2.3)\\
+&= -9\\
+\\
+\delta_2(p) &= (-1.9 + lg(\theta_{n,p})) + \beta_p,_{legh} &\\
+&= -3.5 + lg(0.1/3.3)\\
+&= -8.5\\
+\end{flalign*}
+
+Evaluation of n = 3 :
+\begin{flalign*}
+\delta_n(k) &= \max\limits_{j}(\delta_{n-1}(j)\theta_{j,k}) \beta_k,_{x_n} &\\
+\delta_3(n) &= (-8.9 + lg(\theta_{v,n})) + \beta_n,_{yaS} &\\
+&= -8.9 + lg(0.1/9.3)\\
+&= -15.5\\
+\\
+\delta_3(v) &= (-8.5 + lg(\theta_{p,v})) + \beta_v,_{yaS} &\\
+&= -8.7 + lg(0.1/6.3)\\
+&= -14.7 \\
+\\
+\delta_3(c) &= (-8.5 + lg(\theta_{p,c})) + \beta_c,_{yaS} &\\
+&= -12.2 + lg(0.1/2.3)\\
+&= -16.7 \\
+\\
+\delta_3(p) &= (-8.5 + lg(\theta_{p,p})) + \beta_p,_{yaS} &\\
+&= -12.2 + lg(0.1/3.3)\\
+&= -15.9\\
+\end{flalign*}
+
+\item What is the most likely sequence of parts of speech?
+\begin{itemize}
+\item \textsc{noun} \textsc{pro} \textsc{verb}
+\end{itemize}
+\item Let's compare this to the probability of your previous answer.
+	\begin{enumerate}
+		\item How does this compare to the sequence \textsc{noun}, \textsc{verb}, \textsc{noun}? 
+		\begin{itemize}
+		\item When we reconstruct the sequence with viterbi decoding, we see a \(\log_2\) probability of -14.7 for \textsc{verb} at Position 3 and -8.5 \textsc{pro} at Position 2, making them the most probabile sequence. For \textsc{noun} at Position 3 (-15.5), and \textsc{verb} at Position 2 (-8.9), these are the second most probable outcomes.
+		\end{itemize}
+		\item Which is more plausible linguistically?
+		\begin{itemize}
+		\item The NVN sequence seems the most probable for known words; however, given transition probablities and the limited number of \textsc{pro} and \textsc{conj} POS seen so far (i.e., considering the probability that a \textsc{pro} will most often preceed a \textsc{verb} and that the occurances of \textsc{pro} following \textsc{noun} are not dramatically less probable than a \textsc{verb} following a \textsc{noun}) the NPV sequence seems plausible for new data.
+		\end{itemize}
+		\item Does an \textsc{hmm} model encode the intuition that you used to answer the previous question?
+		\begin{itemize}
+		\item Yes. One of the highest probabilities supporting the NPV model is the transition probability from \textsc{pro} to \textsc{verb} (0.84), and the comparatively high transition probabilties from \textsc{noun} to both \textsc{pro} and \textsc{verb}; and, because the training data has such few \textsc{conj} and \textsc{pro}, new words such as legh and yaS thus receive high probabilities when evaulated as unknowns for those POS. 
+		\end{itemize}
+	\end{enumerate}
+\item (For fun, not for credit) What do you think this sentence means?  What word is the subject of the sentence?
+\\
+\\
+\begin{tabular}{llllll}
+  N  & PRO  & V    \\
+tera'ngan   & legh & yaS   \\
+human    & she   & eat   \\
+\multicolumn{6}{c}{{\em She is eating the human}} \\
+\end{tabular}
+
+
+\end{enumerate}
+
+
+\end{document}
